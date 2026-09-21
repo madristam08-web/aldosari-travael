@@ -2,7 +2,7 @@ import streamlit as st, pandas as pd, requests
 from datetime import date
 
 st.set_page_config(page_title="احمد الدوسري", layout="wide")
-
+st.image("https://upload.wikimedia.org/wikipedia/commons/0/0d/Saudi_Arabian_Airlines_Logo.png", width=180)
 st.markdown("""
 <style>
 .header{background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05');background-size:cover;padding:60px;border-radius:20px;text-align:center;color:white}
