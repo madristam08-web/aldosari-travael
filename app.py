@@ -1,7 +1,9 @@
 import streamlit as st, random, urllib.parse
 from datetime import date
 st.set_page_config(page_title="احمد الدوسري للسفر",layout="wide")
-IBAN="SA38 8000 0000 6080 1016 7520";ACC="608010167520";WA="966553769426"
+IBAN=st.secrets["IBAN"]
+ACC=st.secrets["ACC"]
+WA=st.secrets["WA"]
 SAUDI=["الرياض - RUH","جدة - JED","الدمام - DMM","القصيم - ELQ"]
 WORLD=["دبي - DXB","القاهرة - CAI","لندن - LHR","اسطنبول - IST"]
 st.title("✈️ احمد الدوسري للسفر")
