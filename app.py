@@ -45,8 +45,7 @@ if submit:
 👤 العميل: {customer_name}
 📱 جوال العميل: {customer_phone}
 🌍 الوجهة: {destination}
-🧾 الإيصال المرفوع: {receipt.name}
-🏦 حساب الراجحي: {ACC}
+🧾 الإيصال: {receipt.name}
 """
         
         encoded_msg = urllib.parse.quote(msg_for_owner)
@@ -60,7 +59,7 @@ if submit:
         wa_link_client = f"https://wa.me/{clean_phone}"
 
         st.success(f"✅ تم استلام طلبك {booking_id}")
-        st.warning("سيتم تأكيد الحجز بعد التحقق من وصول المبلغ في حساب الراجحي")
+        st.warning("سيتم تأكيد الحجز بعد التحقق من المبلغ")
         
         st.markdown("---")
         st.subheader(f"📋 تفاصيل الطلب {booking_id}")
@@ -69,4 +68,4 @@ if submit:
         st.write(f"*الوجهة:* {destination}")
         
         st.link_button(f"📲 فتح واتساب العميل", wa_link_client)
-        st.link_button(f"📤 إرسال تفاصيل الحجز لواتسابك", wa_link_owner)
+        st.link_button(f"📤 إرسال الحجز لواتسابك انت", wa_link_owner)
