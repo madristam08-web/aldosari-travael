@@ -1,84 +1,31 @@
-import streamlit as st
+import streamlit as st, random, urllib.parse
 from datetime import date
-import random
-
-st.set_page_config(page_title="احمد الدوسري للسفر", layout="wide")
-
-IBAN = "SA38 8000 0000 6080 1016 7520"
-ACCOUNT_NO = "608010167520"
-
-SAUDI = ["الرياض - RUH","جدة - JED","الدمام - DMM","القصيم - ELQ","أبها - AHB","تبوك - TUU","المدينة - MED"]
-WORLD = ["دبي - DXB","القاهرة - CAI","لندن - LHR","اسطنبول - IST","الدوحة - DOH","الكويت - KWI","البحرين - BAH","باريس - CDG"]
-
-st.title("✈️ احمد الدوسري للسفر والسياحة")
-
-c1,c2,c3,c4 = st.columns(4)
-# صخحت المفاتيح هنا - لا تستخدم from
-with c1: from_city = st.selectbox("من:", SAUDI+WORLD, key="origin_key")
-with c2: to_city = st.selectbox("إلى:", WORLD+SAUDI, key="dest_key")
-with c3: travel_date = st.date_input("التاريخ:", date.today())
-with c4: passengers = st.number_input("المسافرين:", 1,10,1)
-
-if st.button("✈️ بحث عن الرحلات", use_container_width=True, type="primary"):
-    if from_city == to_city:
-        st.error("اختر مدن مختلفة")
-    else:
-        st.session_state['searched'] = True
-        st.session_state['origin_city'] = from_city
-        st.session_state['dest_city'] = to_city
-        st.session_state['travel_date_val'] = str(travel_date)
-        st.session_state['flights'] = [
-            {"flight": f"SV {random.randint(100,999)}", "time": "08:30 - 12:45", "price": random.randint(900,1200)},
-            {"flight": f"SV {random.randint(100,999)}", "time": "14:20 - 18:35", "price": random.randint(1300,1900)},
-            {"flight": f"SV {random.randint(100,999)}", "time": "22:10 - 02:30", "price": random.randint(900,1500)},
-        ]
-        st.session_state['show_pay'] = False
-        st.session_state['confirmed'] = False
-
-if st.session_state.get('searched'):
-    with st.container(border=True):
-        st.markdown("### 💳 جميع طرق الدفع متاحة")
-        p1,p2,p3,p4,p5,p6,p7 = st.columns(7)
-        p1.success("مدى")
-        p2.info("VISA")
-        p3.info("Mastercard")
-        p4.info("Apple Pay")
-        p5.info("stc pay")
-        p6.success("tabby")
-        p7.warning("الراجحي")
-
-    st.subheader(f"🎫 الرحلات: {st.session_state['origin_city']} → {st.session_state['dest_city']}")
-    
-    for i, f in enumerate(st.session_state['flights']):
-        with st.container(border=True):
-            a,b,c,d = st.columns([2,2,1,1])
-            a.write(f"*{f['flight']}*\n{f['time']}")
-            b.write(f"{st.session_state['origin_city']} → {st.session_state['dest_city']}\n{st.session_state['travel_date_val']}")
-            c.write(f"*{f['price']} ر.س*")
-            if d.button("احجز الآن", key=f"book_btn_{i}", type="primary", use_container_width=True):
-                st.session_state['selected_price'] = f['price']
-                st.session_state['selected_flight'] = f['flight']
-                st.session_state['show_pay'] = True
-                st.session_state['confirmed'] = False
-                st.rerun()
-
-if st.session_state.get('show_pay'):
-    with st.container(border=True):
-        st.subheader(f"💳 إتمام حجز {st.session_state['selected_flight']} - {st.session_state['selected_price']} ر.س")
-        st.write(f"المسار: {st.session_state['origin_city']} → {st.session_state['dest_city']}")
-        
-        pay = st.selectbox("اختر طريقة الدفع:", ["تحويل بنكي - الراجحي","مدى - Mada","Visa","Mastercard","Apple Pay","STC Pay","Tabby"])
-        
-        st.warning(f"🏦 حساب التاجر: احمد الدوسري\nرقم الحساب: {ACCOUNT_NO}\nالآيبان: {IBAN}")
-
-        if st.button("💚 تأكيد الحجز وطباعة التذكرة", use_container_width=True, type="primary"):
-            booking_no = f"AHM-{random.randint(10000,99999)}"
-            st.session_state['booking_no'] = booking_no
-            st.session_state['confirmed'] = True
-            st.balloons()
-            st.rerun()
-
-        if st.session_state.get('confirmed'):
-            st.success(f"✅ تم الحجز! رقم حجزك: {st.session_state['booking_no']}")
-            txt = f"تذكرة احمد الدوسري\nالحجز: {st.session_state['booking_no']}\nالرحلة: {st.session_state['selected_flight']}\nمن {st.session_state['origin_city']} الى {st.session_state['dest_city']}\nالسعر: {st.session_state['selected_price']} ر.س\nالحساب: {ACCOUNT_NO}\nIBAN: {IBAN}"
-            st.download_button("🖨️ طباعة التذكرة", txt, file_name=f"{st.session_state['booking_no']}.txt", use_container_width=True)
+st.set_page_config(page_title="احمد الدوسري للسفر",layout="wide")
+IBAN="SA38 8000 0000 6080 1016 7520";ACC="608010167520";WA="966553769426"
+SAUDI=["الرياض - RUH","جدة - JED","الدمام - DMM","القصيم - ELQ"]
+WORLD=["دبي - DXB","القاهرة - CAI","لندن - LHR","اسطنبول - IST"]
+st.title("✈️ احمد الدوسري للسفر")
+c1,c2,c3=st.columns(3)
+with c1: f=st.selectbox("من:",SAUDI+WORLD,key="o")
+with c2: t=st.selectbox("إلى:",WORLD+SAUDI,key="d")
+with c3: d=st.date_input("التاريخ:",date.today())
+if st.button("بحث",type="primary",use_container_width=True):
+ st.session_state.s=True;st.session_state.fc=f;st.session_state.tc=t;st.session_state.dt=str(d)
+ st.session_state.fl=[{"fl":f"SV {random.randint(100,999)}","p":random.randint(900,1500)} for _ in range(3)]
+ st.session_state.c=False
+if st.session_state.get("s"):
+ st.markdown("### 💳 مدى | VISA | Mastercard | Apple Pay | stc pay | tabby | الراجحي")
+ for i,x in enumerate(st.session_state.fl):
+  with st.container(border=True):
+   st.write(f"*{x['fl']}* | {st.session_state.fc}→{st.session_state.tc} | {x['p']} ر.س | {st.session_state.dt}")
+   if st.button("احجز الآن",key=f"b{i}",type="primary"):
+    st.session_state.sp=x['p'];st.session_state.sf=x['fl']
+    st.session_state.bk=f"AHM-{random.randint(10000,99999)}"
+    st.session_state.c=True;st.rerun()
+if st.session_state.get("c"):
+ b=st.session_state.bk
+ msg=f"✈️ حجز جديد {b}\nالرحلة {st.session_state.sf}\nمن {st.session_state.fc} الى {st.session_state.tc}\nالتاريخ {st.session_state.dt}\nالسعر {st.session_state.sp} ر.س\nحساب الراجحي {ACC}"
+ link=f"https://wa.me/{WA}?text={urllib.parse.quote(msg)}"
+ st.success(f"✅ تم الحجز {b}");st.warning(f"🏦 حساب التاجر: احمد الدوسري\nرقم الحساب: {ACC}\nالآيبان: {IBAN}")
+ st.link_button("📱 اضغط هنا وارسلي الحجز على واتسابي 0553769426",link,type="primary",use_container_width=True)
+ st.download_button("🖨️ طباعة التذكرة",msg,file_name=f"{b}.txt",use_container_width=True)
