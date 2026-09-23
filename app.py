@@ -13,8 +13,9 @@ WORLD = ["دبي - DXB","القاهرة - CAI","لندن - LHR","اسطنبول 
 st.title("✈️ احمد الدوسري للسفر والسياحة")
 
 c1,c2,c3,c4 = st.columns(4)
-with c1: from_city = st.selectbox("من:", SAUDI+WORLD, key="from")
-with c2: to_city = st.selectbox("إلى:", WORLD+SAUDI, key="to")
+# صخحت المفاتيح هنا - لا تستخدم from
+with c1: from_city = st.selectbox("من:", SAUDI+WORLD, key="origin_key")
+with c2: to_city = st.selectbox("إلى:", WORLD+SAUDI, key="dest_key")
 with c3: travel_date = st.date_input("التاريخ:", date.today())
 with c4: passengers = st.number_input("المسافرين:", 1,10,1)
 
@@ -22,11 +23,10 @@ if st.button("✈️ بحث عن الرحلات", use_container_width=True, type
     if from_city == to_city:
         st.error("اختر مدن مختلفة")
     else:
-        # نثبت الرحلات مرة وحدة عشان ما تضيع
         st.session_state['searched'] = True
-        st.session_state['from'] = from_city
-        st.session_state['to'] = to_city
-        st.session_state['travel_date'] = travel_date
+        st.session_state['origin_city'] = from_city
+        st.session_state['dest_city'] = to_city
+        st.session_state['travel_date_val'] = str(travel_date)
         st.session_state['flights'] = [
             {"flight": f"SV {random.randint(100,999)}", "time": "08:30 - 12:45", "price": random.randint(900,1200)},
             {"flight": f"SV {random.randint(100,999)}", "time": "14:20 - 18:35", "price": random.randint(1300,1900)},
@@ -34,7 +34,6 @@ if st.button("✈️ بحث عن الرحلات", use_container_width=True, type
         ]
         st.session_state['show_pay'] = False
         st.session_state['confirmed'] = False
-        st.rerun()
 
 if st.session_state.get('searched'):
     with st.container(border=True):
@@ -48,15 +47,14 @@ if st.session_state.get('searched'):
         p6.success("tabby")
         p7.warning("الراجحي")
 
-    st.subheader(f"🎫 الرحلات: {st.session_state['from']} → {st.session_state['to']}")
+    st.subheader(f"🎫 الرحلات: {st.session_state['origin_city']} → {st.session_state['dest_city']}")
     
     for i, f in enumerate(st.session_state['flights']):
         with st.container(border=True):
             a,b,c,d = st.columns([2,2,1,1])
             a.write(f"*{f['flight']}*\n{f['time']}")
-            b.write(f"{st.session_state['from']} → {st.session_state['to']}\n{st.session_state['travel_date']}")
+            b.write(f"{st.session_state['origin_city']} → {st.session_state['dest_city']}\n{st.session_state['travel_date_val']}")
             c.write(f"*{f['price']} ر.س*")
-            # المفتاح ثابت - هذا هو الحل صخ
             if d.button("احجز الآن", key=f"book_btn_{i}", type="primary", use_container_width=True):
                 st.session_state['selected_price'] = f['price']
                 st.session_state['selected_flight'] = f['flight']
@@ -67,7 +65,7 @@ if st.session_state.get('searched'):
 if st.session_state.get('show_pay'):
     with st.container(border=True):
         st.subheader(f"💳 إتمام حجز {st.session_state['selected_flight']} - {st.session_state['selected_price']} ر.س")
-        st.write(f"المسار: {st.session_state['from']} → {st.session_state['to']}")
+        st.write(f"المسار: {st.session_state['origin_city']} → {st.session_state['dest_city']}")
         
         pay = st.selectbox("اختر طريقة الدفع:", ["تحويل بنكي - الراجحي","مدى - Mada","Visa","Mastercard","Apple Pay","STC Pay","Tabby"])
         
@@ -82,5 +80,5 @@ if st.session_state.get('show_pay'):
 
         if st.session_state.get('confirmed'):
             st.success(f"✅ تم الحجز! رقم حجزك: {st.session_state['booking_no']}")
-            txt = f"تذكرة احمد الدوسري\nالحجز: {st.session_state['booking_no']}\nالرحلة: {st.session_state['selected_flight']}\nمن {st.session_state['from']} الى {st.session_state['to']}\nالسعر: {st.session_state['selected_price']} ر.س\nالحساب: {ACCOUNT_NO}\nIBAN: {IBAN}"
+            txt = f"تذكرة احمد الدوسري\nالحجز: {st.session_state['booking_no']}\nالرحلة: {st.session_state['selected_flight']}\nمن {st.session_state['origin_city']} الى {st.session_state['dest_city']}\nالسعر: {st.session_state['selected_price']} ر.س\nالحساب: {ACCOUNT_NO}\nIBAN: {IBAN}"
             st.download_button("🖨️ طباعة التذكرة", txt, file_name=f"{st.session_state['booking_no']}.txt", use_container_width=True)
