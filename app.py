@@ -6,14 +6,14 @@ import urllib.parse
 st.set_page_config(page_title="الدوسري للسفر", page_icon="✈️", layout="centered")
 
 # --- بياناتك الثابتة ---
-OWNER_WA = "966553769426" # رقمك انت
+OWNER_WA = "966553769426"
 try:
     IBAN = st.secrets["IBAN"]
     ACC = st.secrets["ACC"]
     NAME = "احمد سعد الدوسري"
 except:
-    IBAN = "SA0000000000000000000000"
-    ACC = "0000000000"
+    IBAN = "SA388000000608010167520"
+    ACC = "608010167520"
     NAME = "احمد سعد الدوسري"
 
 st.title("✈️ الدوسري للسفر والسياحة")
@@ -23,7 +23,7 @@ with st.form("booking_form"):
     st.subheader("بيانات الحجز")
     customer_name = st.text_input("الاسم الكامل *")
     customer_phone = st.text_input("رقم الجوال (واتساب) * مثال: 0553769426")
-    destination = st.text_input("الوجهة المطلوبة *")
+    destination = st.text_input("الوجهة المطلوبة * مثال: القصيم - القاهرة")
     
     st.markdown("---")
     st.subheader("💳 طريقة الدفع")
@@ -43,28 +43,42 @@ if submit:
         st.error("⚠️ الرجاء تعبئة كل البيانات ورفع الإيصال")
     else:
         booking_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        booking_id = f"AHM-{datetime.now().strftime('%H%M%S')}"
         
-        # تجهيز رسالة واتساب لك انت
-        msg_for_owner = f"حجز جديد ✈️\nالوقت: {booking_time}\nالاسم: {customer_name}\nجوال العميل: {customer_phone}\nالوجهة: {destination}\nالعميل رفع إيصال: {receipt.name}\n\n⚠️ تأكد من وصول المبلغ في الراجحي قبل التأكيد"
+        msg_for_owner = f"""✈️ حجز جديد - الدوسري للسفر
+
+📅 التاريخ: {booking_time}
+🔖 رقم الحجز: {booking_id}
+👤 العميل: {customer_name}
+📱 جوال العميل: {customer_phone}
+🌍 الوجهة: {destination}
+🧾 الإيصال المرفوع: {receipt.name}
+
+💰 المبلغ: يرجى التأكد من تطبيق الراجحي
+🏦 حساب الراجحي: {ACC}
+
+⚠️ تنبيه: لا تؤكد الحجز حتى تتأكد من وصول المبلغ في كشف الحساب"""
+        
         encoded_msg = urllib.parse.quote(msg_for_owner)
         wa_link_owner = f"https://wa.me/{OWNER_WA}?text={encoded_msg}"
         
-        # رابط واتساب العميل لك
-        clean_phone = customer_phone.replace("0", "", 1) if customer_phone.startswith("0") else customer_phone
+        clean_phone = customer_phone.strip().replace(" ", "")
+        if clean_phone.startswith("0"):
+            clean_phone = "966" + clean_phone[1:]
         if not clean_phone.startswith("966"):
             clean_phone = "966" + clean_phone.lstrip("0")
         wa_link_client = f"https://wa.me/{clean_phone}"
 
         st.warning("✅ تم استلام الإيصال، سيتم تأكيد الحجز بعد التحقق من وصول المبلغ في حساب الراجحي خلال دقائق")
-        st.info("⚠️ لن يتم تأكيد أي حجز بدون مطابقة الإيصال مع كشف حسابنا - يرجى انتظار رسالة تأكيد على الواتساب")
+        st.info("⚠️ لن يتم تأكيد أي حجز بدون مطابقة الإيصال مع كشف حسابنا البنكي - يرجى انتظار رسالة تأكيد على الواتساب")
         
         st.markdown("---")
-        st.subheader("📋 تفاصيل الطلب (للمسؤول فقط)")
-        st.write(f"*رقم الطلب:* {booking_time}")
+        st.subheader(f"📋 تفاصيل الطلب {booking_id}")
         st.write(f"*العميل:* {customer_name}")
         st.write(f"*جوال العميل:* {customer_phone}")
+        st.write(f"*الوجهة:* {destination}")
         
         st.link_button(f"📲 فتح واتساب العميل {customer_phone}", wa_link_client)
-        st.link_button(f"📤 إرسال تفاصيل الحجز لواتسابك انت ({OWNER_WA})", wa_link_owner)
+        st.link_button(f"📤 إرسال تفاصيل الحجز لواتسابك انت", wa_link_owner)
         
-        st.success("اضغط الزر الأخير عشان توصلك بيانات العميل على واتسابك وتحفظ رقمه صخ")
+        st.success("اضغط الزر الأخير عشان توصلك بيانات العميل على واتسابك صخ")
