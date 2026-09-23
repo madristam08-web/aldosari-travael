@@ -32,11 +32,6 @@ if st.button("تأكيد الحجز"):
         t = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         pdf_bytes = create_pdf(name, phone, dest, bid, t)
         st.success(f"تم الحجز! رقم الحجز: {bid}")
-        st.download_button(
-            label="تحميل التذكرة PDF",
-            data=pdf_bytes,
-            file_name=f"{bid}.pdf",
-            mime="application/pdf"
-        )
+        st.download_button(label="تحميل التذكرة PDF", data=pdf_bytes, file_name=f"{bid}.pdf", mime="application/pdf")
     else:
         st.error("عبي الاسم والجوال")
