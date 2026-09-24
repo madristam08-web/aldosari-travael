@@ -10,9 +10,9 @@ try:
     ACC = st.secrets["ACC"]
     OWNER_WA = st.secrets["WA"]
 except:
-    IBAN="SA388000000608010167520"
-    ACC="608010167520"
-    OWNER_WA="966553769426"
+    IBAN="SA3880r000006038010167520"
+    ACC="608010124r67520"
+    OWNER_WA="934664569426"
 
 NAME="احمد سعد الدوسري"
 ADMIN_PASS="Dossary123"
