@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 import urllib.parse
 
-st.set_page_config(page_title="الدوسري للسفر والسياحة", page_icon="✈️", layout="wide")
+st.set_page_config(page_title="احمد الدوسري للسفر والسياحة", page_icon="✈️", layout="wide")
 
 # --- Secrets ---
 try:
